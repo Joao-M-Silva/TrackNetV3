@@ -192,6 +192,7 @@ if __name__ == '__main__':
     parser.add_argument('--mask_ratio', type=float, default=0.3, help='ratio of random mask during training InpaintNet')
     parser.add_argument('--tolerance', type=float, default=4, help='difference tolerance of center distance between prediction and ground truth in input size')
     parser.add_argument('--resume_training', action='store_true', default=False, help='resume training from experiment directory')
+    parser.add_argument('--pretrained_weights', type=str, default='', help='path to pre-trained weights file (e.g., ckpts/TrackNet_best.pt)')
     parser.add_argument('--seed', type=int, default=13, help='random seed')
     parser.add_argument('--save_dir', type=str, default='exp', help='directory to save the checkpoints and prediction result')
     parser.add_argument('--debug', action='store_true', default=False)
@@ -263,6 +264,17 @@ if __name__ == '__main__':
         max_val_acc = ckpt['max_val_acc']
         print(f'Resume training from epoch {start_epoch}...')
     else:
+        # Load pre-trained weights if provided
+        if args.pretrained_weights and os.path.exists(args.pretrained_weights):
+            print(f'Loading pre-trained weights from {args.pretrained_weights}...')
+            pretrained_ckpt = torch.load(args.pretrained_weights)
+            model.load_state_dict(pretrained_ckpt['model'])
+            print('Pre-trained weights loaded successfully!')
+        elif args.pretrained_weights:
+            print(f'Warning: Pre-trained weights path "{args.pretrained_weights}" not found, training from scratch...')
+        else:
+            print('No pre-trained weights specified, training from scratch...')
+
         max_val_acc = 0.
         start_epoch = 0
         
