@@ -234,7 +234,7 @@ class Shuttlecock_Trajectory_Dataset(Dataset):
             f_file = np.array([os.path.join(rally_dir, f'{f_id}.{IMG_FORMAT}') for f_id in label_df['Frame']])
             x, y, v = np.array(label_df['X']), np.array(label_df['Y']), np.array(label_df['Visibility'])
 
-            # Read radius if available in CSV and use_fixed_sigma is False, otherwise use default SIGMA
+            # Read radius if available in CSV otherwise use default SIGMA
             if 'Radius' in label_df.columns:
                 r = np.array(label_df['Radius'] / 2) 
             else:
@@ -244,7 +244,7 @@ class Shuttlecock_Trajectory_Dataset(Dataset):
             if 'Difficulty' in label_df.columns:
                 d = np.array(label_df['Difficulty'])
             else:
-                d = np.full(len(x), 'normal')
+                d = np.full(len(x), 'hard')
 
             id = np.array([], dtype=np.int32).reshape(0, self.seq_len, 2)
             frame_file = np.array([]).reshape(0, self.seq_len)
