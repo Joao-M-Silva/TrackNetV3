@@ -193,6 +193,7 @@ if __name__ == '__main__':
     parser.add_argument('--tolerance', type=float, default=4, help='difference tolerance of center distance between prediction and ground truth in input size')
     parser.add_argument('--resume_training', action='store_true', default=False, help='resume training from experiment directory')
     parser.add_argument('--pretrained_weights', type=str, default='', help='path to pre-trained weights file (e.g., ckpts/TrackNet_best.pt)')
+    parser.add_argument('--use_fixed_sigma', action='store_true', default=False, help='use fixed SIGMA parameter instead of Radius column from CSV')
     parser.add_argument('--seed', type=int, default=13, help='random seed')
     parser.add_argument('--save_dir', type=str, default='exp', help='directory to save the checkpoints and prediction result')
     parser.add_argument('--debug', action='store_true', default=False)
@@ -228,8 +229,8 @@ if __name__ == '__main__':
     print(f'Parameters: {param_dict}')
     print(f'Load dataset...')
     data_mode = 'heatmap' if args.model_name == 'TrackNet' else 'coordinate'
-    train_dataset = Shuttlecock_Trajectory_Dataset(split='train', seq_len=args.seq_len, sliding_step=1, data_mode=data_mode, bg_mode=args.bg_mode, frame_alpha=args.frame_alpha, debug=args.debug)
-    val_dataset = Shuttlecock_Trajectory_Dataset(split='val', seq_len=args.seq_len, sliding_step=args.seq_len, data_mode=data_mode, bg_mode=args.bg_mode, debug=args.debug)
+    train_dataset = Shuttlecock_Trajectory_Dataset(split='train', seq_len=args.seq_len, sliding_step=1, data_mode=data_mode, bg_mode=args.bg_mode, frame_alpha=args.frame_alpha, debug=args.debug, use_fixed_sigma=args.use_fixed_sigma)
+    val_dataset = Shuttlecock_Trajectory_Dataset(split='val', seq_len=args.seq_len, sliding_step=args.seq_len, data_mode=data_mode, bg_mode=args.bg_mode, debug=args.debug, use_fixed_sigma=args.use_fixed_sigma)
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=num_workers, drop_last=True, pin_memory=True)
     val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=num_workers, drop_last=False, pin_memory=True)
 
