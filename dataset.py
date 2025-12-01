@@ -545,7 +545,11 @@ class Shuttlecock_Trajectory_Dataset(Dataset):
                 prev_coor = coor[0]
                 prev_vis = vis[0]
                 prev_radius = rad[0] / w_scaler  # Scale radius to heatmap dimensions
-                prev_heatmap = self._get_heatmap(int(coor[0][0]/ w_scaler), int(coor[0][1]/ h_scaler), radius=prev_radius)
+                # If not visible, force coordinates to (0, 0) for zero heatmap
+                if prev_vis:
+                    prev_heatmap = self._get_heatmap(int(coor[0][0]/ w_scaler), int(coor[0][1]/ h_scaler), radius=prev_radius)
+                else:
+                    prev_heatmap = self._get_heatmap(0, 0, radius=prev_radius)
                 
                 # Keep first dimension as timestamp for resample
                 if self.bg_mode == 'subtract':
@@ -589,12 +593,20 @@ class Shuttlecock_Trajectory_Dataset(Dataset):
                     elif prev_vis == 0 or math.sqrt(pow(prev_coor[0]-coor[i][0], 2)+pow(prev_coor[1]-coor[i][1], 2)) < 10:
                         inter_coor = coor[i]
                         inter_vis = vis[i]
-                        cur_heatmap = self._get_heatmap(int(inter_coor[0]/ w_scaler), int(inter_coor[1]/ h_scaler), radius=cur_radius)
+                        # If not visible, force coordinates to (0, 0) for zero heatmap
+                        if vis[i]:
+                            cur_heatmap = self._get_heatmap(int(inter_coor[0]/ w_scaler), int(inter_coor[1]/ h_scaler), radius=cur_radius)
+                        else:
+                            cur_heatmap = self._get_heatmap(0, 0, radius=cur_radius)
                         inter_heatmap = cur_heatmap
                     else:
                         inter_coor = coor[i]
                         inter_vis = vis[i]
-                        cur_heatmap = self._get_heatmap(int(coor[i][0]/ w_scaler), int(coor[i][1]/ h_scaler), radius=cur_radius)
+                        # If not visible, force coordinates to (0, 0) for zero heatmap
+                        if vis[i]:
+                            cur_heatmap = self._get_heatmap(int(coor[i][0]/ w_scaler), int(coor[i][1]/ h_scaler), radius=cur_radius)
+                        else:
+                            cur_heatmap = self._get_heatmap(0, 0, radius=cur_radius)
                         inter_heatmap = prev_heatmap * lamb + cur_heatmap * (1 - lamb)
                     
                     tmp_coor = np.concatenate((tmp_coor, inter_coor.reshape(1, -1), coor[i].reshape(1, -1)), axis=0)
@@ -666,7 +678,11 @@ class Shuttlecock_Trajectory_Dataset(Dataset):
                         img = np.moveaxis(img, -1, 0)
                     
                     cur_radius = rad[i] / w_scaler  # Scale radius to heatmap dimensions
-                    heatmap = self._get_heatmap(int(coor[i][0]/w_scaler), int(coor[i][1]/h_scaler), radius=cur_radius)
+                    # If not visible, force coordinates to (0, 0) for zero heatmap
+                    if vis[i]:
+                        heatmap = self._get_heatmap(int(coor[i][0]/w_scaler), int(coor[i][1]/h_scaler), radius=cur_radius)
+                    else:
+                        heatmap = self._get_heatmap(0, 0, radius=cur_radius)
                     frames = np.concatenate((frames, img), axis=0)
                     heatmaps = np.concatenate((heatmaps, heatmap), axis=0)
                 
