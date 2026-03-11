@@ -190,8 +190,9 @@ class Shuttlecock_Trajectory_Dataset(Dataset):
                 frame_file = np.concatenate((frame_file, data_dict['frame_file']), axis=0)
                 coor = np.concatenate((coor, data_dict['coor']), axis=0)
                 vis = np.concatenate((vis, data_dict['vis']), axis=0)
+                radius = np.concatenate((radius, data_dict['radius']), axis=0)
             
-            np.savez(file_name, id=id, frame_file=frame_file, coor=coor, vis=vis)
+            np.savez(file_name, id=id, frame_file=frame_file, coor=coor, vis=vis, radius=radius)
         else:
             id = np.array([], dtype=np.int32).reshape(0, self.seq_len, 2)
             coor = np.array([], dtype=np.float32).reshape(0, self.seq_len, 2)
