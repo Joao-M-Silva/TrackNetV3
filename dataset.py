@@ -182,6 +182,7 @@ class Shuttlecock_Trajectory_Dataset(Dataset):
             frame_file = np.array([]).reshape(0, self.seq_len)
             coor = np.array([], dtype=np.float32).reshape(0, self.seq_len, 2)
             vis = np.array([], dtype=np.float32).reshape(0, self.seq_len)
+            radius = np.array([], dtype=np.float32).reshape(0, self.seq_len)
 
             # Generate input sequences from each rally
             for rally_i, rally_dir in tqdm(self.rally_dict['i2p'].items()):
