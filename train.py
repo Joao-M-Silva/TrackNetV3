@@ -101,7 +101,7 @@ def train_tracknet(model, optimizer, data_loader, param_dict):
 
         if param_dict['verbose'] and (step + 1) % display_step == 0:
             data_prob.set_description(f'Training')
-            data_prob.set_postfix(loss=loss.item())
+            data_prob.set_postfix(loss=loss.item() * accumulation_steps)
 
         # Visualize current prediction
         if (step + 1) % display_step == 0:
@@ -175,7 +175,7 @@ def train_inpaintnet(model, optimizer, data_loader, param_dict):
 
         if param_dict['verbose'] and (step + 1) % display_step == 0:
             data_prob.set_description(f'Training')
-            data_prob.set_postfix(loss=loss.item())
+            data_prob.set_postfix(loss=loss.item() * accumulation_steps)
 
         # Visualize current prediction
         if (step + 1) % display_step == 0:
