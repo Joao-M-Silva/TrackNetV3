@@ -285,8 +285,9 @@ class Shuttlecock_Trajectory_Dataset(Dataset):
                     assert len(tmp_frames) == len(tmp_coor) == len(tmp_vis),\
 -                    f'Length of frames, coordinates and visibilities are not equal.'
                     # Filter: skip sequences with all "easy" frames
+                    # Filter if "easy" frames in boundaries
                     has_hard_frame = any(diff == 'hard' for diff in tmp_difficulty)
-                    if not has_hard_frame:
+                    if not has_hard_frame or tmp_difficulty[-1] == 'easy' or tmp_difficulty[0] == 'easy':
                         continue  # Skip this sequence
 
                     assert len(tmp_frames) == len(tmp_coor) == len(tmp_vis) == len(tmp_radius),\
